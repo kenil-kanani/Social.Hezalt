@@ -1,15 +1,15 @@
 const { StatusCodes } = require('http-status-codes');
 
 class ValidationError extends Error {
-    constructor(error) {
+    constructor(errObj) {
         super();
 
         //! Build explanation array
         // Some logic
 
-        this.name = 'ValidationError';
-        this.message = 'Not able to validate the dataset sent in the request.';
-        this.explanation = 'Sent the wrong data';
+        this.name = errObj.name || 'ValidationError';
+        this.message = errObj.message || 'Not able to validate the dataset sent in the request.';
+        this.explanation = errObj.explanation || 'Sent the wrong data';
         this.statusCode = StatusCodes.BAD_REQUEST;
     }
 }

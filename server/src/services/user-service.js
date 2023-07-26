@@ -3,7 +3,8 @@ const sendMail = require('../utils/send-mail');
 const jwt = require('jsonwebtoken');
 const { JWT_KEY } = require('../config/serverConfig');
 const bcrypt = require('bcrypt');
-const { ServiceError } = require('../utils/errors/index');
+const { ServiceError, ValidationError } = require('../utils/errors/index');
+const { StatusCodes } = require('http-status-codes');
 
 class UserService {
     constructor() {
@@ -40,11 +41,19 @@ class UserService {
                 console.log("Password doesn't match");
                 throw { error: 'Incorrect password' };
             }
+            if (!user.status) {
+                throw new ValidationError(
+                    {
+                        message: 'User is not verified',
+                        explanation: 'click on the link recieved on mail to verify'
+                    }
+                );
+            }
             //- step 3-> if passwords match then create a token and send it to the user
             const newJWT = this.createToken({ email: user.email, id: user._id }, '1d');
             return newJWT;
         } catch (error) {
-            if (error.name == 'RepositoryError') {
+            if (error.name == 'RepositoryError' || error.name == 'ValidationError') {
                 throw error;
             }
             throw new ServiceError();
