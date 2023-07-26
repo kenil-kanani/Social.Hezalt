@@ -47,6 +47,21 @@ class UserRepository {
         }
     }
 
+    async updatePassword(userId, newEncryptedPassword) {
+        try {
+            const updatedUser = await UserModel.updateOne({ _id: userId }, { password: newEncryptedPassword });
+            console.log(updatedUser)
+            return updatedUser;
+        } catch (error) {
+            throw new AppError(
+                'RepositoryError',
+                'Not able to update the password',
+                'not able to update , try again later',
+                StatusCodes.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     async activeAccount(userId) {
         try {
             const updatedUser = await UserModel.updateOne({ _id: userId }, { status: true });

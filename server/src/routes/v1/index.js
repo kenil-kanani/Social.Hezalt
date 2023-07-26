@@ -23,4 +23,9 @@ router.get(
     UserController.activateAccount
 );
 
+router.patch(
+    '/changepassword',
+    UserController.changePassword
+)
+
 module.exports = router;

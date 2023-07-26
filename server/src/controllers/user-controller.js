@@ -46,6 +46,26 @@ const signIn = async (req, res) => {
     }
 }
 
+const changePassword = async (req, res) => {
+    try {
+        const response = await userService.changePassword(req.body.email, req.body.oldPassword, req.body.newPassword);
+        return res.status(201).json({
+            success: true,
+            message: 'Successfully change the password',
+            data: response,
+            err: {}
+        })
+    } catch (error) {
+        console.log("Something went wrong in changing password Process", error);
+        return res.status(error.statusCode).json({
+            message: 'Something went wrong',
+            data: {},
+            success: false,
+            err: error
+        })
+    }
+}
+
 
 const isAuthenticated = async (req, res) => {
     try {
@@ -93,5 +113,6 @@ module.exports = {
     createUser,
     signIn,
     isAuthenticated,
-    activateAccount
+    activateAccount,
+    changePassword
 }

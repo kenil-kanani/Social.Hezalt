@@ -5,6 +5,7 @@ const { JWT_KEY } = require('../config/serverConfig');
 const bcrypt = require('bcrypt');
 const { ServiceError, ValidationError } = require('../utils/errors/index');
 const { StatusCodes } = require('http-status-codes');
+const { encryptedPassword } = require('../utils/encryptPassword');
 
 class UserService {
     constructor() {
@@ -38,8 +39,12 @@ class UserService {
             const passwordsMatch = this.checkPassword(plainPassword, user.password);
 
             if (!passwordsMatch) {
-                console.log("Password doesn't match");
-                throw { error: 'Incorrect password' };
+                throw new ValidationError(
+                    {
+                        message: 'Incorect password',
+                        explanation: 'password not match , try again later'
+                    }
+                );
             }
             if (!user.status) {
                 throw new ValidationError(
@@ -88,10 +93,47 @@ class UserService {
             }
             //- update isActivated to true and save it into database
             const user = await this.userRepository.activeAccount(response.id);
-            token
+            // token
             return user.status;
         } catch (error) {
             if (error.name == 'RepositoryError') {
+                throw error;
+            }
+            throw new ServiceError();
+        }
+    }
+
+    async changePassword(userEmail, oldPassword, newPassword) {
+        try {
+            //- step 1-> fetch the user using the email
+            const user = await this.userRepository.getByEmail(userEmail);
+            //- step 2-> compare incoming plain password with stores encrypted password
+            const passwordsMatch = this.checkPassword(oldPassword, user.password);
+
+            if (!passwordsMatch) {
+                console.log("Password doesn't match");
+                throw new ValidationError(
+                    {
+                        message: 'Password does not match',
+                        explanation: 'password not match , try again later'
+                    }
+                );
+            }
+            //! User not able to change password without has been verified user.
+            if (!user.status) {
+                throw new ValidationError(
+                    {
+                        message: 'User is not verified',
+                        explanation: 'click on the link recieved on mail to verify'
+                    }
+                );
+            }
+            //! Encrypte the new Password
+            const encryptedPass = encryptedPassword(newPassword);
+
+            return await this.userRepository.updatePassword(user._id, encryptedPass);
+        } catch (error) {
+            if (error.name == 'RepositoryError' || error.name == 'ValidationError') {
                 throw error;
             }
             throw new ServiceError();
