@@ -35,7 +35,7 @@ class UserRepository {
 
     async getById(userId) {
         try {
-            const user = await UserModel.find({ _id: userId });
+            const user = await UserModel.findOne({ _id: userId });
             return user;
         } catch (error) {
             throw new AppError(

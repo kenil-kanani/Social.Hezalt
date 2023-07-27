@@ -5,6 +5,7 @@ const { JWT_KEY } = require('../config/serverConfig');
 const bcrypt = require('bcrypt');
 const { ServiceError, ValidationError } = require('../utils/errors/index');
 const { encryptedPassword } = require('../utils/encryptPassword');
+const { StatusCodes } = require('http-status-codes');
 
 class UserService {
     constructor() {
@@ -68,13 +69,19 @@ class UserService {
         try {
             const response = this.verifyToken(token);
             if (!response) {
-                throw { error: 'Invalid token' }
+                throw new ValidationError(
+                    {
+                        message: 'Not able to verify token'
+                    }
+                )
             }
             const user = await this.userRepository.getById(response.id);
             if (!user) {
-                throw { error: 'No user with the corresponding token exists' };
+                throw new ValidationError({
+                    message: 'User not exist'
+                })
             }
-            return user[0]._id;
+            return user._id;
         } catch (error) {
             if (error.name == 'RepositoryError') {
                 throw error;
@@ -86,13 +93,15 @@ class UserService {
     async activateAccount(token) {
         try {
             const response = this.verifyToken(token);
-            console.log(response)
             if (!response) {
-                throw { error: 'Invalid token' }
+                throw new ValidationError(
+                    {
+                        message: 'Invalid Token'
+                    }
+                )
             }
             //- update isActivated to true and save it into database
             const user = await this.userRepository.activeAccount(response.id);
-            // token
             return user.status;
         } catch (error) {
             if (error.name == 'RepositoryError') {
@@ -110,7 +119,6 @@ class UserService {
             const passwordsMatch = this.checkPassword(oldPassword, user.password);
 
             if (!passwordsMatch) {
-                console.log("Password doesn't match");
                 throw new ValidationError(
                     {
                         message: 'Password does not match',
@@ -144,8 +152,11 @@ class UserService {
             const result = jwt.sign(user, JWT_KEY, { expiresIn: expTime });
             return result;
         } catch (error) {
-            console.log("Something went wrong in token creation.", error);
-            throw error;
+            throw ServiceError({
+                message: 'Not able to create token',
+                explanation: 'Not able to create token , try againg later',
+                statusCode: StatusCodes.INTERNAL_SERVER_ERROR
+            });
         }
     }
 
@@ -154,8 +165,11 @@ class UserService {
             const response = jwt.verify(token, JWT_KEY);
             return response;
         } catch (error) {
-            console.log("Something went wrong in token validation.", error);
-            throw error;
+            throw ServiceError({
+                message: 'Not able to verify token',
+                explanation: 'Not able to verify token , try againg later',
+                statusCode: StatusCodes.INTERNAL_SERVER_ERROR
+            });
         }
     }
 
@@ -163,8 +177,11 @@ class UserService {
         try {
             return bcrypt.compareSync(userInputPlainPassword, encryptedPassword);
         } catch (error) {
-            console.log("Something went wrong in password comparison.", error);
-            throw error;
+            throw ServiceError({
+                message: 'Not able to check password',
+                explanation: 'Not able to check password , try againg later',
+                statusCode: StatusCodes.INTERNAL_SERVER_ERROR
+            });
         }
     }
 }

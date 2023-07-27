@@ -15,7 +15,7 @@ class ProfileService {
             const profile = await this.profileRepository.createProfile(profileDetail);
             return profile;
         } catch (error) {
-            if (error.name == 'AppError') {
+            if (error.name == 'RepositoryError') {
                 throw error;
             }
             throw new ServiceError();
