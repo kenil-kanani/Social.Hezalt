@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const { JWT_KEY } = require('../config/serverConfig');
 const bcrypt = require('bcrypt');
 const { ServiceError, ValidationError } = require('../utils/errors/index');
-const { StatusCodes } = require('http-status-codes');
 const { encryptedPassword } = require('../utils/encryptPassword');
 
 class UserService {
@@ -71,11 +70,11 @@ class UserService {
             if (!response) {
                 throw { error: 'Invalid token' }
             }
-            const user = await this.userRepository.getById(response._id);
+            const user = await this.userRepository.getById(response.id);
             if (!user) {
                 throw { error: 'No user with the corresponding token exists' };
             }
-            return user._id;
+            return user[0]._id;
         } catch (error) {
             if (error.name == 'RepositoryError') {
                 throw error;
