@@ -33,4 +33,9 @@ router.post(
     ProfileController.createProfile
 )
 
+router.post(
+    '/updateprofile',
+    ProfileController.updateProfile
+)
+
 module.exports = router;

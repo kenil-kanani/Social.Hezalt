@@ -34,7 +34,7 @@ class UserRepository {
     }
 
     async getById(userId) {
-        try {
+        try {                                               
             const user = await UserModel.findOne({ _id: userId });
             return user;
         } catch (error) {
@@ -50,7 +50,6 @@ class UserRepository {
     async updatePassword(userId, newEncryptedPassword) {
         try {
             const updatedUser = await UserModel.updateOne({ _id: userId }, { password: newEncryptedPassword });
-            console.log(updatedUser)
             return updatedUser;
         } catch (error) {
             throw new AppError(

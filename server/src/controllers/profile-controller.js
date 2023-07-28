@@ -31,6 +31,28 @@ const createProfile = async (req, res) => {
     }
 }
 
+const updateProfile = async (req, res) => {
+    try {
+        const token = req.body.token;
+        const response = await profileService.updateProfile(token, req.body.updateProfileDetail);
+        return res.status(201).json({
+            success: true,
+            message: 'Successfully updated a profile',
+            data: response,
+            err: {}
+        });
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Something went while updating profile',
+            data: {},
+            success: false,
+            err: error
+        })
+    }
+}
+
 module.exports = {
-    createProfile
+    createProfile,
+    updateProfile
 }
