@@ -1,6 +1,7 @@
 //! Third Party modules
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 //! Custom modules
 const { connectToMongo } = require('./src/config/databaseConfig');
@@ -18,6 +19,8 @@ const setUpAndStartServer = async () => {
 
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }));
+
+        app.use(cors());
 
         app.use('/api', ApiRoutes);
 

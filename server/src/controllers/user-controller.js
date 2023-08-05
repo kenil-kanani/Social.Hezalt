@@ -36,6 +36,15 @@ const signIn = async (req, res) => {
             err: {}
         })
     } catch (error) {
+
+        if (error.name == 'ValidationError') {
+            return res.status(400).json({
+                message: error.message,
+                data: {},
+                success: false,
+                err: error
+            })
+        }
         console.log("Something went wrong in signIn Process", error);
         return res.status(error.statusCode).json({
             message: 'Something went wrong',

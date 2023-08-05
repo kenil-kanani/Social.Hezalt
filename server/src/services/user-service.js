@@ -19,14 +19,16 @@ class UserService {
                     ...userDetail,
                     status: false
                 });
+            console.log(user)
             const newJWT = this.createToken({ id: user._id }, '1d');
             //- send token in mail or any other medium
-            await sendMail(user.email, newJWT);
-            return newJWT;
+            // await sendMail(user.email, newJWT);
+            return true;
         } catch (error) {
             if (error.name == 'RepositoryError') {
                 throw error;
             }
+            console.log(error);
             throw new ServiceError();
         }
     }
@@ -35,13 +37,21 @@ class UserService {
         try {
             //- step 1-> fetch the user using the email
             const user = await this.userRepository.getByEmail(email);
-            //- step 2-> compare incoming plain password with stores encrypted password
+            if (!user) {
+                throw new ValidationError(
+                    {
+                        message: 'Incorrect Email',
+                        explanation: 'Email not match , try again later'
+                    }
+                );
+            }
             const passwordsMatch = this.checkPassword(plainPassword, user.password);
+            //- step 2-> compare incoming plain password with stores encrypted password
 
             if (!passwordsMatch) {
                 throw new ValidationError(
                     {
-                        message: 'Incorect password',
+                        message: 'Incorrect Password',
                         explanation: 'password not match , try again later'
                     }
                 );
@@ -49,7 +59,7 @@ class UserService {
             if (!user.status) {
                 throw new ValidationError(
                     {
-                        message: 'User is not verified',
+                        message: 'Not Verifyed Email',
                         explanation: 'click on the link recieved on mail to verify'
                     }
                 );

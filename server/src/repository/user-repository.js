@@ -8,8 +8,10 @@ class UserRepository {
         try {
             const user = await new UserModel(userDetail);
             await user.save();
+            console.log(user);
             return user;
         } catch (error) {
+            console.log("objecte" , error)
             throw new AppError(
                 'RepositoryError',
                 'Not able to create new User',
@@ -22,6 +24,7 @@ class UserRepository {
     async getByEmail(userEmail) {
         try {
             const user = await UserModel.findOne({ email: userEmail });
+            console.log(user);
             return user;
         } catch (error) {
             throw new AppError(

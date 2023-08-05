@@ -1,0 +1,12 @@
+.root-nav{
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}

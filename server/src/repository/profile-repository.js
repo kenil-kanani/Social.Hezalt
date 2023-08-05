@@ -7,7 +7,6 @@ class ProfileRepository {
         try {
             const profile = new ProfileModel(profileData);
             await profile.save();
-            console.log("Profile", profile)
             return profile;
         } catch (error) {
             throw new AppError(
