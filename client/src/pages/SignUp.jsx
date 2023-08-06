@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import './styles/signup.style.css'
 import { Link } from "react-router-dom"
 import { AuthContext } from '../../src/context/AuthContext';
+import { Loader } from '../../src/components/index';
 
 
 const SignUpForm = () => {
@@ -13,6 +14,9 @@ const SignUpForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
+
+    //* loader is visible or not
+    const [isVisible, setIsVisible] = useState(false);
 
     //* email and password are empty or not
     const [isNameEmpty, setIsNameEmpty] = useState(false);
@@ -43,7 +47,9 @@ const SignUpForm = () => {
                 }
                 return;
             }
+            setIsVisible(true);
             await signup(name, email, password);
+            setIsVisible(false);
         } catch (error) {
             console.error('Error logging in:', error);
         }

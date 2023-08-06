@@ -3,7 +3,7 @@ import { Login, SignUp, Home, Contact, Verify } from './pages/index'
 import { Route, Routes } from "react-router-dom"
 import PrivateRoute from './routes/PrivateRoute';
 import { AuthContext } from './context/AuthContext';
-import { useEffect, useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Navbar, AuthNavbar } from './components/index'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

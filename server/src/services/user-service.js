@@ -23,7 +23,7 @@ class UserService {
             const newJWT = this.createToken({ id: user._id }, '1d');
             //- send token in mail or any other medium
             // await sendMail(user.email, newJWT);
-            return true;
+            return newJWT;
         } catch (error) {
             if (error.name == 'RepositoryError') {
                 throw error;
@@ -56,16 +56,20 @@ class UserService {
                     }
                 );
             }
+
+            //- step 3-> if passwords match then create a token and send it to the user
+            const newJWT = this.createToken({ email: user.email, id: user._id }, '1d');
+
+            //! User not able to login without has been verified user.
             if (!user.status) {
                 throw new ValidationError(
                     {
                         message: 'Not Verifyed Email',
-                        explanation: 'click on the link recieved on mail to verify'
+                        explanation: newJWT
                     }
                 );
             }
-            //- step 3-> if passwords match then create a token and send it to the user
-            const newJWT = this.createToken({ email: user.email, id: user._id }, '1d');
+
             return newJWT;
         } catch (error) {
             if (error.name == 'RepositoryError' || error.name == 'ValidationError') {
@@ -114,6 +118,7 @@ class UserService {
             const user = await this.userRepository.activeAccount(response.id);
             return user.status;
         } catch (error) {
+            console.log("Service : ", error)
             if (error.name == 'RepositoryError') {
                 throw error;
             }
@@ -175,7 +180,8 @@ class UserService {
             const response = jwt.verify(token, JWT_KEY);
             return response;
         } catch (error) {
-            throw ServiceError({
+            console.log("Verify Token : ", error);
+            throw new ServiceError({
                 message: 'Not able to verify token',
                 explanation: 'Not able to verify token , try againg later',
                 statusCode: StatusCodes.INTERNAL_SERVER_ERROR
@@ -192,6 +198,28 @@ class UserService {
                 explanation: 'Not able to check password , try againg later',
                 statusCode: StatusCodes.INTERNAL_SERVER_ERROR
             });
+        }
+    }
+
+    async isActivated(token) {
+        try {
+            const response = this.verifyToken(token);
+            if (!response) {
+                throw new ValidationError(
+                    {
+                        message: 'Invalid Token'
+                    }
+                )
+            }
+            //- update isActivated to true and save it into database
+            const user = await this.userRepository.getById(response.id);
+            return user.status;
+        } catch (error) {
+            console.log("Service : ", error)
+            if (error.name == 'RepositoryError') {
+                throw error;
+            }
+            throw new ServiceError();
         }
     }
 }

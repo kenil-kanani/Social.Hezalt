@@ -100,6 +100,7 @@ const isAuthenticated = async (req, res) => {
 const activateAccount = async (req, res) => {
     try {
         const token = req.query.token;
+        console.log("Token :", token)
         const response = await userService.activateAccount(token);
         return res.status(200).json({
             success: true,
@@ -108,7 +109,27 @@ const activateAccount = async (req, res) => {
             message: 'user is activated.'
         });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
+        return res.status(500).json({
+            message: 'Something went wrong',
+            data: {},
+            success: false,
+            err: error
+        });
+    }
+}
+
+const isActivated = async (req, res) => {
+    try {
+        const token = req.query.token;
+        const response = await userService.isActivated(token);
+        return res.status(200).json({
+            success: true,
+            err: {},
+            data: response,
+            message: 'user is activated.'
+        });
+    } catch (error) {
         return res.status(500).json({
             message: 'Something went wrong',
             data: {},
@@ -123,5 +144,6 @@ module.exports = {
     signIn,
     isAuthenticated,
     activateAccount,
-    changePassword
+    changePassword,
+    isActivated
 }

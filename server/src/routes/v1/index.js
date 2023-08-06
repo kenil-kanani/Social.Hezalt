@@ -38,4 +38,8 @@ router.post(
     ProfileController.updateProfile
 )
 
+router.get(
+    '/isactivated',
+    UserController.isActivated
+)
 module.exports = router;

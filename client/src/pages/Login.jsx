@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import './styles/login.style.css'
 import { Link } from "react-router-dom"
 import { AuthContext } from '../../src/context/AuthContext';
+import { Loader } from '../../src/components/index';
 
 const LoginForm = () => {
 
@@ -11,6 +12,9 @@ const LoginForm = () => {
     //* state variables
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    //* loader is visible or not
+    const [isVisible, setIsVisible] = useState(false);
 
     //* email and password are empty or not
     const [isEmailEmpty, setIsEmailEmpty] = useState(false);
@@ -34,14 +38,18 @@ const LoginForm = () => {
                 }
                 return;
             }
+            setIsVisible(true);
             await login(email, password);
+            setIsVisible(false);
         } catch (error) {
+            setIsVisible(false);
             console.error('Error logging in:', error);
         }
     };
 
     return (
         <>
+            {isVisible && <div className='absolute'><Loader /></div>}
             <form className="form">
                 <h1 className='text-center text-3xl'>Sign In</h1>
                 <div className="flex-column">

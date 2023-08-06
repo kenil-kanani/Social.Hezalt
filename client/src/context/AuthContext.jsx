@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { signInApi, signUpApi } from '../apis/index';
 import { toast } from "react-toastify";
 
-
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -17,14 +16,18 @@ export const AuthProvider = ({ children }) => {
 
         try {
             const response = await signInApi(email, password);
-
             if (response.success) {
                 toast.success(response.message);
                 localStorage.setItem('auth', true);
                 localStorage.setItem('X-access-token', response.data)
                 setIsAuthenticated(true);
                 navigate('/');
-            } else {
+            } else if (response.err.message === 'Not Verifyed Email') {
+                toast.error(response.message);
+                localStorage.setItem('X-access-token-2', response.err.explanation)
+                navigate('/verify');
+            }
+            else {
                 toast.error(response.message);
             }
         } catch (error) {
@@ -37,6 +40,7 @@ export const AuthProvider = ({ children }) => {
             const response = await signUpApi(name, email, password);
             if (response.success) {
                 toast.success(response.message);
+                localStorage.setItem('X-access-token-2', response.data)
                 navigate('/verify');
             } else {
                 toast.error(response.message);
