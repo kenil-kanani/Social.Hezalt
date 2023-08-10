@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await signInApi(email, password);
             if (response.success) {
-                toast.success(response.message);
+                toast.success(response.message );
                 localStorage.setItem('auth', true);
                 localStorage.setItem('X-access-token', response.data)
                 setIsAuthenticated(true);

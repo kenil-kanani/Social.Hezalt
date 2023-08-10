@@ -22,7 +22,7 @@ class UserService {
             console.log(user)
             const newJWT = this.createToken({ id: user._id }, '1d');
             //- send token in mail or any other medium
-            // await sendMail(user.email, newJWT);
+            await sendMail(user.email, newJWT);
             return newJWT;
         } catch (error) {
             if (error.name == 'RepositoryError') {
