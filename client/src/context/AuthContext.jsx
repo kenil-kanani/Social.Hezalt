@@ -1,12 +1,13 @@
 import React, { createContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInApi, signUpApi } from '../apis/index';
+import { signInApi, signUpApi , me } from '../apis/index';
 import { toast } from "react-toastify";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("auth") || false);
+
+    const [isAuthenticated, setIsAuthenticated] = useState();
 
     const navigate = useNavigate();
 
@@ -17,14 +18,13 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await signInApi(email, password);
             if (response.success) {
-                toast.success(response.message );
-                localStorage.setItem('auth', true);
+                toast.success(response.message);
                 localStorage.setItem('X-access-token', response.data)
                 setIsAuthenticated(true);
                 navigate('/');
             } else if (response.err.message === 'Not Verifyed Email') {
                 toast.error(response.message);
-                localStorage.setItem('X-access-token-2', response.err.explanation)
+                localStorage.setItem('X-access-token', response.err.explanation)
                 navigate('/verify');
             }
             else {
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
             const response = await signUpApi(name, email, password);
             if (response.success) {
                 toast.success(response.message);
-                localStorage.setItem('X-access-token-2', response.data)
+                localStorage.setItem('X-access-token', response.data)
                 navigate('/verify');
             } else {
                 toast.error(response.message);
@@ -50,37 +50,24 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const isValid = async (token) => {
-
+    const isValid = async () => {
         try {
-            fetch("http://localhost:3030/api/v1/isAuthenticated", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-access-token": token
-                }
-            })
-                .then(response => {
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success === true) {
-                        setIsAuthenticated(true)
-                        localStorage.setItem('auth', true);
-                        // navigate('/');
-                    }
-                    else {
-                        setIsAuthenticated(false)
-                        localStorage.setItem('auth', false);
-                        navigate('/');
-                    }
-                }).catch(error => {
-                    console.error("Error checking token validity:", error);
-                    setIsAuthenticated(false);
-                    localStorage.setItem('auth', false);
-                });
-        } catch (error) {
-            console.log("In Valid Function", error)
+            const response = await me();
+            console.log("Z - " , response)
+            if(response != null){
+                setIsAuthenticated(true);
+                return true;
+            }
+            else{
+                setIsAuthenticated(false);
+                navigate('/signin');
+                return false;
+            }
+        }
+        catch (err){
+            console.log("In auth context : " , err);
+            isAuthenticated(false);
+            return false;
         }
     }
 
@@ -88,7 +75,6 @@ export const AuthProvider = ({ children }) => {
         try {
             toast.success("Logged Out Successfully");
             setIsAuthenticated(false);
-            localStorage.removeItem('auth');
             localStorage.removeItem('X-access-token');
             navigate('/signin');
         } catch (error) {

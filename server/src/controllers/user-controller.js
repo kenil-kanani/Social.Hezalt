@@ -55,6 +55,27 @@ const signIn = async (req, res) => {
     }
 }
 
+const me = async (req,res) => {
+    const userId = req.user.id;
+    try {
+        const response = await userService.me(userId)
+        return res.status(201).json({
+            success: true,
+            message: 'User is fond from token id',
+            data: response,
+            err: {}
+        })
+    } catch (error) {
+        console.log("Controler Error - " , error)
+        return res.status(error.statusCode).json({
+            message: 'Something went wrong',
+            data: {},
+            success: false,
+            err: error
+        })
+    }
+}
+
 const changePassword = async (req, res) => {
     try {
         const response = await userService.changePassword(req.body.email, req.body.oldPassword, req.body.newPassword);
@@ -145,5 +166,6 @@ module.exports = {
     isAuthenticated,
     activateAccount,
     changePassword,
-    isActivated
+    isActivated,
+    me
 }

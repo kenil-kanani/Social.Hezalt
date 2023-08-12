@@ -3,25 +3,25 @@ import { Login, SignUp, Home, Contact, Verify } from './pages/index'
 import { Route, Routes } from "react-router-dom"
 import PrivateRoute from './routes/PrivateRoute';
 import { AuthContext } from './context/AuthContext';
-import {  useEffect, useContext } from "react";
-import { Navbar, AuthNavbar } from './components/index'
+import React, {useEffect, useContext, useState} from "react";
+import { Navbar } from './components/index'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
 
-  const { isValid, isAuthenticated } = useContext(AuthContext);
+  const { isValid } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const token = localStorage.getItem("X-access-token");
-    if (token && !isAuthenticated) {
-      isValid(token);
-    }
-  }, []);
-
-  // useEffect(() => {
-  //   console.log("Updated isAuthenticated:", isAuthenticated);
-  // }, [isAuthenticated]);
+    useEffect(() => {
+        isValid()
+            .then(() => {
+                setIsLoading(false);
+            })
+            .catch(() => {
+                setIsLoading(false);
+            });
+    }, []);
 
   return (
     <>
@@ -37,22 +37,34 @@ function App() {
         pauseOnHover
         theme='light'
       />
-      {isAuthenticated ? <AuthNavbar /> : <Navbar />}
-      <Routes>
-        <Route path="/" element={
-          // <PrivateRoute>
-          <Home />
-          // </PrivateRoute>
-        } />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<Login />} />
-        <Route path="/verify" element={<Verify />} />
-        <Route path="/contact" element={
-          <PrivateRoute>
-            <Contact />
-          </PrivateRoute>
-        } />
-      </Routes>
+        {!isLoading ?
+            (
+                <>
+                    <Navbar/>
+                    <Routes>
+                        <Route path="/" element={
+                            // <PrivateRoute>
+                            <Home />
+                            // </PrivateRoute>
+                        } />
+                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/signin" element={<Login />} />
+                        <Route path="/verify" element={<Verify />} />
+                        <Route path="/contact" element={
+                            <PrivateRoute>
+                                <Contact />
+                            </PrivateRoute>
+                        } />
+                    </Routes>
+                </>
+            )
+        :
+            (
+                <div className='w-screen h-screen flex justify-center items-center flex-col'>
+                    loading...
+                </div>
+            )
+        }
     </>
   )
 }

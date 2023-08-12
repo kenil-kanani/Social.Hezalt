@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {authenticateJwt} = require('../../middlewares/auth')
 
 const { UserController, ProfileController } = require('../../controllers/index')
 
@@ -41,5 +42,11 @@ router.post(
 router.get(
     '/isactivated',
     UserController.isActivated
+)
+
+router.get(
+    '/me' ,
+    authenticateJwt,
+    UserController.me
 )
 module.exports = router;

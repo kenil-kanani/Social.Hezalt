@@ -1,0 +1,181 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700&display=swap");
+
+* {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+
+
+button{
+    border-radius: 2px;
+    cursor: pointer;
+}
+nav {
+    /* border: 10px solid red; */
+    display: flex;
+    justify-content: space-between;
+    max-width: 1280px;
+    margin: 0 auto;
+    height: 72px;
+    align-items: center;
+}
+.nav-logo {
+    width: 90px;
+    height: 102.75px;
+    mix-blend-mode: multiply;
+    flex-shrink: 0;
+    background-color: #fff;
+}
+
+ul {
+    display: flex;
+    list-style: none;
+    gap: 24px;
+}
+
+ul a{
+    text-decoration: none;
+    color: #5A5959;
+}
+
+.btn {
+    height: 36px;
+    width: 75px;
+    background-color: #d01c28;
+    color: #fff;
+}
+
+/* .logos{
+  width: 32px;
+  height: 32px;
+} */
+
+.hero {
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 80px;
+    height: calc(100vh-72px);
+}
+
+.hero h1{
+    font-weight: 800;
+    font-size: 108px;
+    line-height: 102px;
+}
+
+.hero p{
+    color:  #5A5959;
+    /* font-family: Poppins; */
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    max-width: 400px;
+}
+.hero-left{
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+}
+.btns{
+    display: flex;
+    gap: 40px;
+}
+button{
+    border-radius: 2px;
+    cursor: pointer;
+}
+.btn-1{
+    background-color: #d01c28;
+    color: #fff;
+    height: 30px;
+    box-shadow: 1px 2px #888888;
+
+}
+
+.btn-2{
+    background-color: transparent;
+    color: #5A5959 ;
+    border: 1px solid ;
+    height: 30px;
+    box-shadow: 1px 2px #888888;
+}
+
+.shopping p{
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.logos{
+
+    display: flex;
+    gap: 16px;
+    height: 122px;
+    /* mix-blend-mode: multiply; */
+}
+
+.right-image{
+    height: 350px;
+    /* transform: scaleY(1.2); */
+}
+
+@media screen and (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+    }
+
+    .nav-logo {
+        margin-bottom: 16px;
+    }
+
+    ul {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .hero {
+        flex-direction: column;
+        align-items: center;
+        padding: 24px;
+        margin-top: 40px;
+        height: auto;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+        line-height: 56px;
+    }
+
+    .hero p {
+        font-size: 14px;
+        max-width: 100%;
+    }
+
+    .hero-left {
+        gap: 24px;
+    }
+
+    .btns {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .shopping p {
+        font-size: 12px;
+    }
+
+    .logos {
+        display: none;
+    }
+
+    .right-image {
+        height: auto;
+        width: 100%;
+    }
+}

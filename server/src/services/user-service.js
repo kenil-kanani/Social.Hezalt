@@ -79,6 +79,20 @@ class UserService {
         }
     }
 
+    async me(userId){
+        try {
+            const response = await this.userRepository.getById(userId);
+            return {email: response.email , status : response.status};
+        } catch (error) {
+            console.log("Service Error - " , error)
+            throw ServiceError({
+                message: 'Not able to find user by mail',
+                explanation: 'Not able to find user, try againg later',
+                statusCode: StatusCodes.INTERNAL_SERVER_ERROR
+            });
+        }
+    }
+
     async isAuthenticated(token) {
         try {
             const response = this.verifyToken(token);

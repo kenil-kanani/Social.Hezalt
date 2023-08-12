@@ -1,4 +1,4 @@
-import { Navbar, AuthNavbar } from './Navbar';
+import { Navbar } from './Navbar';
 import Loader from './Loader';
 
-export { Navbar, AuthNavbar, Loader };
+export { Navbar, Loader };
