@@ -53,14 +53,19 @@ export const AuthProvider = ({ children }) => {
     const isValid = async () => {
         try {
             const response = await me();
-            console.log("Z - " , response)
             if(response != null){
-                setIsAuthenticated(true);
-                return true;
+                if(response.status){
+                    setIsAuthenticated(true);
+                    return true;
+                }
+                else {
+                    setIsAuthenticated(false);
+                    navigate('/verify');
+                    return false;
+                }
             }
             else{
                 setIsAuthenticated(false);
-                navigate('/signin');
                 return false;
             }
         }

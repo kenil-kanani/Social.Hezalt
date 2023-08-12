@@ -7,27 +7,15 @@ const Verify = () => {
 
     useEffect(() => {
         setInterval(async () => {
-            console.log("In Verify Page");
             const response = await isActivateAccount();
-            console.log("Response.data - ",response.data)
             if (response.data) {
-                // localStorage.removeItem('X-access-token');
                 window.location.href = "/";
             }
-            // console.log("Somdwdn - " , localStorage.getItem('X-access-token-2') === null)
             if (localStorage.getItem('X-access-token') === null) {
-                // console.log(localStorage.getItem('X-access-token-2'))
                 window.location.href = "/signin";
             }
-        }, 500);
+        }, 2000);
     }, []);
-
-    // useEffect(async() => {
-    //     const isActivated = await isActivateAccount();
-    //     if (isActivated) {
-    //         window.location.href = "/signin";
-    //     }
-    // }, []);
 
     const [verificationSent, setVerificationSent] = useState(false);
 
